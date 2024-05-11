@@ -2,40 +2,23 @@ package main
 
 import (
 	"os"
-	"os/exec"
 
 	"github.com/jahidxuddin/git-fast-clone/internal/cli"
-	"github.com/jahidxuddin/git-fast-clone/internal/utils"
+	"github.com/joho/godotenv"
 )
 
 func main() {
 	args := os.Args[1:]
 
-	gitHubUsername, isGitHubUsernameParsed := cli.ParseGitHubUsernameFromArgs(args)
-	if isGitHubUsernameParsed != nil {
-		println(isGitHubUsernameParsed.Error())
+	if len(args) > 1 {
+		println("Too many arguments.")
 		return
 	}
 
-	repositories, areRepositoriesFetched := utils.FetchRepositories(gitHubUsername)
-	if areRepositoriesFetched != nil {
-		println(areRepositoriesFetched.Error())
+	if err := godotenv.Load(); err != nil {
+		println("Error loading .env file: %v", err)
 		return
 	}
 
-	repositoryCloneURL, isRepositorySelected := cli.PromptRepository(repositories)
-	if isRepositorySelected != nil {
-		println(isRepositorySelected.Error())
-		return
-	}
-
-	command := exec.Command("git", "clone", repositoryCloneURL)
-
-	_, isRepositoryCloned := command.Output()
-	if isRepositoryCloned != nil {
-		println("Error executing command: ", isRepositoryCloned.Error())
-		return
-	}
-
-	println("Repository successfully cloned.")
+	cli.HandleCommands(args)
 }
