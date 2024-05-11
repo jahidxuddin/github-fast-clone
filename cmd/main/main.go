@@ -16,8 +16,7 @@ func main() {
 	}
 
 	if err := godotenv.Load(); err != nil {
-		println("Error loading .env file: %v", err)
-		return
+		println("Error loading .env file: " + err.Error())
 	}
 
 	cli.HandleCommands(args)

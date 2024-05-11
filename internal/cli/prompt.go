@@ -1,23 +1,9 @@
 package cli
 
 import (
-	"bufio"
-	"os"
-	"strings"
-
 	"github.com/jahidxuddin/git-fast-clone/internal/utils"
 	"github.com/rivo/tview"
 )
-
-func PromptGitHubUsername() (string, error) {
-	reader := bufio.NewReader(os.Stdin)
-	print("Enter your GitHub username: ")
-	username, err := reader.ReadString('\n')
-	if err != nil {
-		return "", err
-	}
-	return strings.TrimSpace(username), nil
-}
 
 func PromptRepository(repositories []utils.Repository) (string, error) {
 	app := tview.NewApplication()
