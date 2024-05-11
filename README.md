@@ -1,11 +1,13 @@
 # github-fast-clone
 
-Say goodbye to cumbersome manual URL copying and pasting – with git-fast-clone, simply enter the username, browse through the displayed repositories, and swiftly clone the one you need.
+Say goodbye to cumbersome manual URL copying and pasting – with github-fast-clone, simply enter the username, browse through the displayed repositories, and swiftly clone the one you need.
 
+## How to use git-fast-clone
+Download the executable for [Windows](/bin/gfc.exe) or [Linux/MacOS](/bin/gfc.bin).
 ```shell
 gfc login
 ```
-This command initiates the login process for the GFC (Global File Converter) tool. Users are prompted to provide their credentials (such as username and password) to authenticate themselves.
+This command initiates the login process for GitHub.
 ```shell
 gfc
 ```
