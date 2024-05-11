@@ -5,7 +5,7 @@ Say goodbye to cumbersome manual URL copying and pasting – with github-fast-cl
 ## How to use github-fast-clone
 1. Download the executable for <a href="/bin/gfc.exe" download>Windows</a> or <a href="/bin/gfc.bin" download>Linux/MacOS</a>.
 2. Move the executable to any location. For example in programs. 
-3. Copy the path and add it to the PATH variable of you operating system.
+3. Copy the path and add it to the PATH variable of your operating system.
 4. Execute the following commands: 
 ```shell
 gfc login
