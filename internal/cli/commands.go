@@ -74,6 +74,7 @@ func execLoginCommand() {
 
 	url := conf.AuthCodeURL("state")
 	
+	println("Open: " + url)
 	utils.OpenURL(url)
 
 	var code string
