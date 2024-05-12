@@ -5,6 +5,8 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
+	"runtime"
 
 	"github.com/jahidxuddin/git-fast-clone/internal/utils"
 	"golang.org/x/oauth2"
@@ -39,6 +41,30 @@ type Config struct {
 	Token string `yaml:"token"`
 }
 
+func getConfigFilePath() (string, error) {
+	var configDir string
+
+	switch operatingSystem := runtime.GOOS; operatingSystem {
+	case "windows":
+		configDir = os.Getenv("APPDATA")
+	case "darwin":
+		configDir = path.Join(os.Getenv("HOME"), "Library", "Preferences")
+	default:
+		configDir = "/etc"
+	}
+
+	configPath := configDir + "\\github-fast-clone"
+
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		err := os.MkdirAll(configPath, 0755)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	return configPath, nil
+}
+
 func createAuthConfigFile(token string) error {
 	config := Config{
 		Token: token,
@@ -49,14 +75,14 @@ func createAuthConfigFile(token string) error {
 		return isAuthConfigFileCreated
 	}
 
-    cwd, err := os.Getwd()
-    if err != nil {
-        return err
-    }
+	configPath, err := getConfigFilePath()
+	if err != nil {
+		return err
+	}
 
-	isAuthConfigFileWritten := os.WriteFile(path.Join(cwd, "config.yml"), yamlData, 0644)
-	if isAuthConfigFileWritten != nil {
-		return isAuthConfigFileWritten
+	err = os.WriteFile(filepath.Join(configPath, "config.yml"), yamlData, 0644)
+	if err != nil {
+		return err
 	}
 
 	return nil
@@ -79,7 +105,7 @@ func execLoginCommand() {
 	}
 
 	url := conf.AuthCodeURL("state")
-	
+
 	println("Open: " + url)
 	utils.OpenURL(url)
 
@@ -104,7 +130,13 @@ func execLoginCommand() {
 
 func HandleCommands(args []string) {
 	if len(args) == 0 {
-		yamlFile, err := os.ReadFile("config.yml")
+		configPath, err := getConfigFilePath()
+		if err != nil {
+			fmt.Printf("Error finding config file path: %v\n", err)
+			return
+		}
+
+		yamlFile, err := os.ReadFile(filepath.Join(configPath, "config.yml"))
 		if err != nil {
 			println("Unauthenticated. Please use gfc login.")
 			return
@@ -113,7 +145,7 @@ func HandleCommands(args []string) {
 		var config Config
 		err = yaml.Unmarshal(yamlFile, &config)
 		if err != nil {
-			println("Wrror unmarshalling YAML: %v", err.Error())
+			fmt.Printf("Error unmarshalling YAML: %v\n", err)
 			return
 		}
 
