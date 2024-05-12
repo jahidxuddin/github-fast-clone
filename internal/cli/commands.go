@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/exec"
 	"path"
-	"path/filepath"
 
 	"github.com/jahidxuddin/git-fast-clone/internal/utils"
 	"golang.org/x/oauth2"
@@ -50,14 +49,12 @@ func createAuthConfigFile(token string) error {
 		return isAuthConfigFileCreated
 	}
 
-	ex, err := os.Executable()
-	if err != nil {
-		panic(err)
-	}
+    cwd, err := os.Getwd()
+    if err != nil {
+        return err
+    }
 
-	exPath := filepath.Dir(ex)
-
-	isAuthConfigFileWritten := os.WriteFile(path.Join(exPath, "config.yml"), yamlData, 0644)
+	isAuthConfigFileWritten := os.WriteFile(path.Join(cwd, "config.yml"), yamlData, 0644)
 	if isAuthConfigFileWritten != nil {
 		return isAuthConfigFileWritten
 	}
